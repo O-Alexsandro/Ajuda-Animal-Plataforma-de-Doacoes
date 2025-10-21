@@ -1,17 +1,24 @@
 package com.ajudaanimal.doacoes.entity.usuario_ong;
 
-import java.util.Date;
+import jakarta.validation.constraints.NotNull;
 
 public record UsuarioDTO(
+        @NotNull
         String nome,
+        @NotNull
         String email,
+        @NotNull
         String senha,
+        @NotNull
         String telefone,
+        @NotNull
         String rua,
+        @NotNull
         String cidade,
+        @NotNull
         String estado,
+        @NotNull
         String bairro,
-        TipoDeConta tipoDeConta,
-        Date dataCadastro
-) {
-}
+        @NotNull
+        TipoDeConta tipoDeConta
+) {}

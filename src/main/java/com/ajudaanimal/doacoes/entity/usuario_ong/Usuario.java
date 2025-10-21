@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Table
@@ -28,7 +29,7 @@ public class Usuario {
     private String estado;
     private String bairro;
     private TipoDeConta tipoDeConta;
-    private LocalDate dataCadastro;
+    private LocalDateTime dataCadastro;
 
     public Usuario(UsuarioDTO usuarioDTO) {
         this.nome = usuarioDTO.nome();
@@ -40,6 +41,6 @@ public class Usuario {
         this.estado = usuarioDTO.estado();
         this.bairro = usuarioDTO.bairro();
         this.tipoDeConta = usuarioDTO.tipoDeConta();
-        this.dataCadastro = LocalDate.now();
+        this.dataCadastro = LocalDateTime.now();
     }
 }

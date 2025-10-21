@@ -1,4 +1,4 @@
-package com.ajudaanimal.doacoes.controller.usuarios;
+package com.ajudaanimal.doacoes.controller.usuario;
 
 import com.ajudaanimal.doacoes.entity.usuario_ong.AtualizarUsuarioDTO;
 import com.ajudaanimal.doacoes.entity.usuario_ong.Usuario;

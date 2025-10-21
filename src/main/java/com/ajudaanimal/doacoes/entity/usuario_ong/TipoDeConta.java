@@ -8,6 +8,8 @@ public enum TipoDeConta {
     ONG("ONG"),
     ADMIN("ADMIN");
 
+    // Terá um link para o usuário comum se cadastrar
+    // terá um link para a ONG se cadastrar
     private final String tipo;
 
     TipoDeConta(String tipo) {
