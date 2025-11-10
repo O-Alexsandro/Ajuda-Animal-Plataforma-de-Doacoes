@@ -12,7 +12,5 @@ public record DoacaoDTO(
         @NotNull
         Categoria categoria,
         @NotNull
-        EstadoConservacao estadoConservacao,
-        @NotNull
-        byte[] imagem
+        EstadoConservacao estadoConservacao
 ) {}

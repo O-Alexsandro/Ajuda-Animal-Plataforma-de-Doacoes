@@ -10,7 +10,5 @@ public record AtualizarDoacaoDTO(
         String titulo,
         String descricao,
         Categoria categoria,
-        EstadoConservacao estadoConservacao,
-        byte[] imagem
-) {
-}
+        EstadoConservacao estadoConservacao
+) {}

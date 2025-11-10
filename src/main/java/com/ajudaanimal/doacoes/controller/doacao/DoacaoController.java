@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,14 +26,16 @@ public class DoacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Doacao> criarDoacao(@RequestBody @Valid DoacaoDTO doacaoDTO){
-        doacaoService.criarDoacao(doacaoDTO);
+    public ResponseEntity<Doacao> criarDoacao(@ModelAttribute @Valid DoacaoDTO doacaoDTO,
+                                              @RequestParam("imagem")MultipartFile file) throws IOException {
+        doacaoService.criarDoacao(doacaoDTO, file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
-    public ResponseEntity<Doacao> atualizarDoacao (@RequestBody @Valid AtualizarDoacaoDTO doacaoDTO){
-        Doacao atualizarDoacao = doacaoService.atualizarDoacao(doacaoDTO);
+    public ResponseEntity<Doacao> atualizarDoacao (@ModelAttribute @Valid AtualizarDoacaoDTO doacaoDTO,
+                                                   @RequestParam(name = "imagem", required = false)MultipartFile file) throws IOException {
+        Doacao atualizarDoacao = doacaoService.atualizarDoacao(doacaoDTO, file);
         return ResponseEntity.ok(atualizarDoacao);
     }
 

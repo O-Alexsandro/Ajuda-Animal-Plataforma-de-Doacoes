@@ -3,9 +3,13 @@ package com.ajudaanimal.doacoes.entity.doacao;
 import com.ajudaanimal.doacoes.entity.usuario_ong.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Blob;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 
 @Entity
@@ -26,11 +30,12 @@ public class Doacao {
     private String descricao;
     private Categoria categoria;
     private EstadoConservacao estadoConservacao;
-    private Blob imagem;
+    @Lob
+    private byte[] imagem;
     private Status status;
     private LocalDateTime dataCadastro;
 
-    public Doacao(DoacaoDTO doacaoDTO, Usuario usuario) {
+    public Doacao(DoacaoDTO doacaoDTO, Usuario usuario, MultipartFile file) throws IOException {
         this.usuario = usuario;
         this.titulo = doacaoDTO.titulo();
         this.descricao = doacaoDTO.descricao();
@@ -38,5 +43,6 @@ public class Doacao {
         this.estadoConservacao = doacaoDTO.estadoConservacao();
         this.status = Status.DISPONIVEL;
         this.dataCadastro = LocalDateTime.now();
+        this.imagem = file.getBytes();
     }
 }

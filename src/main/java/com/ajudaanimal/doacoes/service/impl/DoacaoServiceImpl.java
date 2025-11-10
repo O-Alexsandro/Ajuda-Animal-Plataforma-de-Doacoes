@@ -10,7 +10,10 @@ import com.ajudaanimal.doacoes.service.DoacaoService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,22 +28,22 @@ public class DoacaoServiceImpl implements DoacaoService {
     }
 
     @Override
-    public Doacao criarDoacao(DoacaoDTO doacaoDTO) {
+    public Doacao criarDoacao(DoacaoDTO doacaoDTO, MultipartFile file) throws IOException {
         Usuario usuario = usuarioRepository.findById(doacaoDTO.usuarioId()).orElseThrow(
                 ()-> new EntityNotFoundException("Usuário não localizado"));
-        Doacao novaDoacao = new Doacao(doacaoDTO, usuario);
+        Doacao novaDoacao = new Doacao(doacaoDTO, usuario,file);
         return doacaoRepository.save(novaDoacao);
     }
 
     @Override
-    public Doacao atualizarDoacao(AtualizarDoacaoDTO doacaoDTO) {
+    public Doacao atualizarDoacao(AtualizarDoacaoDTO doacaoDTO, MultipartFile file) throws IOException {
         Usuario usuario = usuarioRepository.findById(doacaoDTO.usuarioId()).orElseThrow(
                 ()-> new EntityNotFoundException("Usuário não localizado"));
 
         Doacao doacao = doacaoRepository.findById(doacaoDTO.id()).orElseThrow(
                 ()-> new EntityNotFoundException("Doação não localizada"));
 
-        Doacao atualizacao = atualizarDadosDoacao(doacao, doacaoDTO);
+        Doacao atualizacao = atualizarDadosDoacao(doacao, doacaoDTO, file);
         return doacaoRepository.save(atualizacao);
     }
 
@@ -51,7 +54,7 @@ public class DoacaoServiceImpl implements DoacaoService {
         doacaoRepository.delete(doacao);
     }
 
-    public Doacao atualizarDadosDoacao(Doacao doacao, AtualizarDoacaoDTO doacaoDTO){
+    public Doacao atualizarDadosDoacao(Doacao doacao, AtualizarDoacaoDTO doacaoDTO, MultipartFile file) throws IOException {
         if (doacaoDTO.titulo() != null){
             doacao.setTitulo(doacaoDTO.titulo());
         }
@@ -64,7 +67,12 @@ public class DoacaoServiceImpl implements DoacaoService {
         if (doacaoDTO.estadoConservacao() != null){
             doacao.setEstadoConservacao(doacaoDTO.estadoConservacao());
         }
-
+        if (!file.isEmpty()){
+            byte[] imagem = file.getBytes();
+            doacao.setImagem(imagem);
+        } else {
+            return doacao;
+        }
         return doacao;
     }
 }
