@@ -6,12 +6,16 @@ import com.ajudaanimal.doacoes.entity.usuario_ong.UsuarioDTO;
 import com.ajudaanimal.doacoes.repository.usuario_ong.UsuarioRepository;
 import com.ajudaanimal.doacoes.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService {
+public class UsuarioServiceImpl implements UserDetailsService, UsuarioService {
     @Autowired UsuarioRepository usuarioRepository;
 
     @Override
@@ -23,6 +27,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario criarUsuario(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario(usuarioDTO);
+        String senhaBcrypt = new BCryptPasswordEncoder().encode(usuarioDTO.senha());
+        usuario.setSenha(senhaBcrypt);
         return usuarioRepository.save(usuario);
     }
 
@@ -60,8 +66,8 @@ public class UsuarioServiceImpl implements UsuarioService {
             usuario.setEmail(dados.email());
         }
         if (dados.senha() != null) {
-            usuario.setSenha(dados.senha());
-        }
+            String senhaBcrypt = new BCryptPasswordEncoder().encode(dados.senha());
+            usuario.setSenha(senhaBcrypt);        }
         if (dados.telefone() != null){
             usuario.setTelefone(dados.telefone());
         }
@@ -78,5 +84,10 @@ public class UsuarioServiceImpl implements UsuarioService {
             usuario.setBairro(dados.bairro());
         }
         return usuario;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return usuarioRepository.findByEmail(username);
     }
 }
