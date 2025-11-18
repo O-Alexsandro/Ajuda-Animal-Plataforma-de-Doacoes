@@ -15,5 +15,4 @@ public interface InteresseService {
     public Interesse recusarInteresse(Long idInteresse);
     public InteresseResponseDTO buscarInteressePorStatus(String statusInteresse);
     public List<InteresseResponseDTO> listarInteressePorDoacao(Long idDoacao);
-
 }

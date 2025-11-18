@@ -1,8 +1,6 @@
 package com.ajudaanimal.doacoes.service.impl;
 
-import com.ajudaanimal.doacoes.entity.doacao.AtualizarDoacaoDTO;
-import com.ajudaanimal.doacoes.entity.doacao.Doacao;
-import com.ajudaanimal.doacoes.entity.doacao.DoacaoDTO;
+import com.ajudaanimal.doacoes.entity.doacao.*;
 import com.ajudaanimal.doacoes.entity.usuario_ong.Usuario;
 import com.ajudaanimal.doacoes.repository.doacao.DoacaoRepository;
 import com.ajudaanimal.doacoes.repository.usuario_ong.UsuarioRepository;
@@ -10,10 +8,10 @@ import com.ajudaanimal.doacoes.service.DoacaoService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -52,6 +50,38 @@ public class DoacaoServiceImpl implements DoacaoService {
         Doacao doacao = doacaoRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Doação não encontrada"));
         doacaoRepository.delete(doacao);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DoacaoResponseDTO> listarDoacaoPorTipoDeItem(String categoria) {
+        Categoria categoriaEnum = Categoria.valueOf(categoria.toUpperCase());
+        Doacao response = doacaoRepository.findByCategoria(categoriaEnum);
+
+        DoacaoResponseDTO doacaoResponseDTO = new DoacaoResponseDTO(
+                response.getTitulo(),
+                response.getDescricao(),
+                response.getCategoria(),
+                response.getEstadoConservacao(),
+                response.getImagem()
+        );
+        return List.of(doacaoResponseDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DoacaoResponseDTO> listarDoacaoPorEstadoConservacao(String estadoConservacao) {
+        EstadoConservacao estadoConservacaoEnum = EstadoConservacao.valueOf(estadoConservacao.toUpperCase());
+        Doacao response = doacaoRepository.findByEstadoConservacao(estadoConservacaoEnum);
+
+        DoacaoResponseDTO doacaoResponseDTO = new DoacaoResponseDTO(
+                response.getTitulo(),
+                response.getDescricao(),
+                response.getCategoria(),
+                response.getEstadoConservacao(),
+                response.getImagem()
+        );
+        return List.of(doacaoResponseDTO);
     }
 
     public Doacao atualizarDadosDoacao(Doacao doacao, AtualizarDoacaoDTO doacaoDTO, MultipartFile file) throws IOException {

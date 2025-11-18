@@ -3,6 +3,7 @@ package com.ajudaanimal.doacoes.controller.doacao;
 import com.ajudaanimal.doacoes.entity.doacao.AtualizarDoacaoDTO;
 import com.ajudaanimal.doacoes.entity.doacao.Doacao;
 import com.ajudaanimal.doacoes.entity.doacao.DoacaoDTO;
+import com.ajudaanimal.doacoes.entity.doacao.DoacaoResponseDTO;
 import com.ajudaanimal.doacoes.service.impl.DoacaoServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,19 @@ public class DoacaoController {
     @GetMapping
     public ResponseEntity<List<Doacao>> listarDoacoes(){
         return ResponseEntity.ok(doacaoService.listarDoacoes());
+    }
+
+    @GetMapping("/busca/TipoItem/{categoria}")
+    public ResponseEntity<List<DoacaoResponseDTO>> listarDoacaoPorTipoDeItem(@PathVariable String categoria){
+        List<DoacaoResponseDTO> responseDTO = doacaoService.listarDoacaoPorTipoDeItem(categoria);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+
+    @GetMapping("/busca/EstadoConservacao/{estado}")
+    public ResponseEntity<List<DoacaoResponseDTO>> listarDoacaoPorEstadoConservacao(@PathVariable String estado){
+        List<DoacaoResponseDTO> responseDTO = doacaoService.listarDoacaoPorEstadoConservacao(estado);
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping

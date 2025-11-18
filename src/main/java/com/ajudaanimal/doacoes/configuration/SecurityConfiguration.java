@@ -28,8 +28,32 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(a -> a
-                        .requestMatchers("/**").permitAll()
+
+                        // TODOS OS USUÁRIOS PODEM REALIZAR
                         .requestMatchers(HttpMethod.POST,"/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/doacoes").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/doacoes/**").permitAll()
+
+
+                        // DOAÇÕES
+                        .requestMatchers(HttpMethod.POST, "/doacoes").hasAnyRole("ADMIN", "ONG")
+                        .requestMatchers(HttpMethod.PUT, "/doacoes").hasAnyRole("ADMIN", "ONG")
+                        .requestMatchers(HttpMethod.DELETE, "/doacoes/{id}").hasAnyRole("ADMIN", "ONG")
+
+                        // INTERESSES
+                        .requestMatchers(HttpMethod.POST, "/interesse").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/interesse").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/interesse/{id}*").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/interesse").hasAnyRole("ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/interesse/cancelar/**").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/interesse/status/**").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/interesse/status/adocao/**").hasAnyRole("USUARIO", "ONG", "ADMIN")
+
+                        // ADMIN
+                        .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/usuarios/{id}").hasRole("ADMIN")
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
