@@ -12,5 +12,9 @@ public record DoacaoDTO(
         @NotNull
         Categoria categoria,
         @NotNull
-        EstadoConservacao estadoConservacao
+        EstadoConservacao estadoConservacao,
+        @NotNull
+        String estado,
+        @NotNull
+        String cidade
 ) {}

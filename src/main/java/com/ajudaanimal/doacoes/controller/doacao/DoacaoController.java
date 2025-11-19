@@ -32,10 +32,15 @@ public class DoacaoController {
         return ResponseEntity.ok(responseDTO);
     }
 
-
     @GetMapping("/busca/EstadoConservacao/{estado}")
     public ResponseEntity<List<DoacaoResponseDTO>> listarDoacaoPorEstadoConservacao(@PathVariable String estado){
         List<DoacaoResponseDTO> responseDTO = doacaoService.listarDoacaoPorEstadoConservacao(estado);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/busca/estado/{estado}")
+    public ResponseEntity<List<DoacaoResponseDTO>> listarDoacaoPorCidade(@PathVariable String estado){
+        List<DoacaoResponseDTO> responseDTO = doacaoService.listarDoacaoPorEstado(estado);
         return ResponseEntity.ok(responseDTO);
     }
 

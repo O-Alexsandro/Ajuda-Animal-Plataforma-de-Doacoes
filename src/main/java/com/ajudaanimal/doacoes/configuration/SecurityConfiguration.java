@@ -36,7 +36,6 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,"/doacoes").permitAll()
                         .requestMatchers(HttpMethod.GET,"/doacoes/**").permitAll()
 
-
                         // DOAÇÕES
                         .requestMatchers(HttpMethod.POST, "/doacoes").hasAnyRole("ADMIN", "ONG")
                         .requestMatchers(HttpMethod.PUT, "/doacoes").hasAnyRole("ADMIN", "ONG")

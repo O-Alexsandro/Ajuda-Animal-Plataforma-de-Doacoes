@@ -63,6 +63,8 @@ public class DoacaoServiceImpl implements DoacaoService {
                 response.getDescricao(),
                 response.getCategoria(),
                 response.getEstadoConservacao(),
+                response.getEstado(),
+                response.getCidade(),
                 response.getImagem()
         );
         return List.of(doacaoResponseDTO);
@@ -79,6 +81,26 @@ public class DoacaoServiceImpl implements DoacaoService {
                 response.getDescricao(),
                 response.getCategoria(),
                 response.getEstadoConservacao(),
+                response.getEstado(),
+                response.getCidade(),
+                response.getImagem()
+        );
+        return List.of(doacaoResponseDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DoacaoResponseDTO> listarDoacaoPorEstado(String estado) {
+        String request = estado.toUpperCase();
+        Doacao response = doacaoRepository.findByEstado(request);
+
+        DoacaoResponseDTO doacaoResponseDTO = new DoacaoResponseDTO(
+                response.getTitulo(),
+                response.getDescricao(),
+                response.getCategoria(),
+                response.getEstadoConservacao(),
+                response.getEstado(),
+                response.getCidade(),
                 response.getImagem()
         );
         return List.of(doacaoResponseDTO);
@@ -96,6 +118,12 @@ public class DoacaoServiceImpl implements DoacaoService {
         }
         if (doacaoDTO.estadoConservacao() != null){
             doacao.setEstadoConservacao(doacaoDTO.estadoConservacao());
+        }
+        if (doacaoDTO.estado() != null){
+            doacao.setEstado(doacaoDTO.estado());
+        }
+        if (doacaoDTO.cidade() != null){
+            doacao.setCidade(doacaoDTO.cidade());
         }
         if (!file.isEmpty()){
             byte[] imagem = file.getBytes();

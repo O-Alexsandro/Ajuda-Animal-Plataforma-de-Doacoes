@@ -5,5 +5,7 @@ public record DoacaoResponseDTO(
         String descricao,
         Categoria categoria,
         EstadoConservacao estadoConservacao,
+        String estado,
+        String cidade,
         byte[] imagem
 ) {}

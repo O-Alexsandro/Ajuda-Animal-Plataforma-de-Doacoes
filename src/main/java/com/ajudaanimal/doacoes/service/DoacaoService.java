@@ -14,4 +14,5 @@ public interface DoacaoService {
     public void deletarDoacao(Long id);
     public List<DoacaoResponseDTO> listarDoacaoPorTipoDeItem(String categoria);
     public List<DoacaoResponseDTO> listarDoacaoPorEstadoConservacao(String estadoConservacao);
+    public List<DoacaoResponseDTO> listarDoacaoPorEstado(String estado);
 }

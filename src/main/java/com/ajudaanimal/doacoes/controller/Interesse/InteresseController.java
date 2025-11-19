@@ -3,7 +3,6 @@ package com.ajudaanimal.doacoes.controller.Interesse;
 import com.ajudaanimal.doacoes.entity.interesse.Interesse;
 import com.ajudaanimal.doacoes.entity.interesse.InteresseDTO;
 import com.ajudaanimal.doacoes.entity.interesse.InteresseResponseDTO;
-import com.ajudaanimal.doacoes.entity.interesse.StatusInteresse;
 import com.ajudaanimal.doacoes.service.impl.InteresseServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,11 +6,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.Blob;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-
 
 @Entity
 @Table(name = "doacao")
@@ -30,6 +26,8 @@ public class Doacao {
     private String descricao;
     private Categoria categoria;
     private EstadoConservacao estadoConservacao;
+    private String estado;
+    private String cidade;
     @Lob
     private byte[] imagem;
     private Status status;
@@ -41,6 +39,8 @@ public class Doacao {
         this.descricao = doacaoDTO.descricao();
         this.categoria = doacaoDTO.categoria();
         this.estadoConservacao = doacaoDTO.estadoConservacao();
+        this.estado = doacaoDTO.estado();
+        this.cidade = doacaoDTO.cidade();
         this.status = Status.DISPONIVEL;
         this.dataCadastro = LocalDateTime.now();
         this.imagem = file.getBytes();
