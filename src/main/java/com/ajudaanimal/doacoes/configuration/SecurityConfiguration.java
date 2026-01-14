@@ -58,7 +58,7 @@ public class SecurityConfiguration {
 
                         // ADMIN
                         .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/usuarios/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/usuarios/{id}").hasAnyRole("ADMIN", "USUARIO", "ONG")
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

@@ -26,6 +26,7 @@ public class TokenServiceImpl implements TokenService {
             return JWT.create()
                     .withIssuer("ajuda-animal")
                     .withSubject(usuario.getEmail())
+                    .withClaim("USER_ID", usuario.getId().toString())
                     .withClaim("ROLE", usuario.getTipoDeConta().ordinal())
                     .withExpiresAt(expiracaoToken())
                     .sign(algorithm);

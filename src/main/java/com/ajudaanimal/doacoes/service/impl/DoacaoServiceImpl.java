@@ -25,6 +25,11 @@ public class DoacaoServiceImpl implements DoacaoService {
         return doacaoRepository.findAll();
     }
 
+    public Doacao listarDoacaoPorId(Long id) {
+        return doacaoRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("Doação não localizada"));
+    }
+
     @Override
     public Doacao criarDoacao(DoacaoDTO doacaoDTO, MultipartFile file) throws IOException {
         Usuario usuario = usuarioRepository.findById(doacaoDTO.usuarioId()).orElseThrow(
@@ -133,4 +138,6 @@ public class DoacaoServiceImpl implements DoacaoService {
         }
         return doacao;
     }
+
+
 }

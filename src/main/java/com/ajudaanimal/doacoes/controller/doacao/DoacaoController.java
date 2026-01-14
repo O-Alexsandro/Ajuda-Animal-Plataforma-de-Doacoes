@@ -26,6 +26,12 @@ public class DoacaoController {
         return ResponseEntity.ok(doacaoService.listarDoacoes());
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Doacao> listarDoacaoPorId(@PathVariable Long id){
+        Doacao doacao = doacaoService.listarDoacaoPorId(id);
+        return ResponseEntity.ok(doacao);
+    }
+
     @GetMapping("/busca/TipoItem/{categoria}")
     public ResponseEntity<List<DoacaoResponseDTO>> listarDoacaoPorTipoDeItem(@PathVariable String categoria){
         List<DoacaoResponseDTO> responseDTO = doacaoService.listarDoacaoPorTipoDeItem(categoria);
