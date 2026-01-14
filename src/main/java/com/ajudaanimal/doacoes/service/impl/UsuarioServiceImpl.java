@@ -18,6 +18,8 @@ import java.util.List;
 public class UsuarioServiceImpl implements UserDetailsService, UsuarioService {
     @Autowired UsuarioRepository usuarioRepository;
 
+    @Autowired EmailSenderServiceImpl emailSenderService;
+
     @Override
     public Usuario buscarUsuarioPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Usuário não encontrado"));
@@ -29,6 +31,7 @@ public class UsuarioServiceImpl implements UserDetailsService, UsuarioService {
         Usuario usuario = new Usuario(usuarioDTO);
         String senhaBcrypt = new BCryptPasswordEncoder().encode(usuarioDTO.senha());
         usuario.setSenha(senhaBcrypt);
+        emailSenderService.enviarEmailIscricao(usuarioDTO);
         return usuarioRepository.save(usuario);
     }
 
