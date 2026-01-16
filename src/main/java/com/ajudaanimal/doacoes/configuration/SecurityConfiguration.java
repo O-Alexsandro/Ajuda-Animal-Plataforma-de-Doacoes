@@ -46,15 +46,19 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/doacoes").hasAnyRole("ADMIN", "ONG")
                         .requestMatchers(HttpMethod.PUT, "/doacoes").hasAnyRole("ADMIN", "ONG")
                         .requestMatchers(HttpMethod.DELETE, "/doacoes/{id}").hasAnyRole("ADMIN", "ONG")
+                        .requestMatchers(HttpMethod.POST, "/doacoes/confirmar/{idUsuario}/{idDoacao}").hasAnyRole("ADMIN", "ONG")
+                        .requestMatchers(HttpMethod.GET, "/doacoes/usuario/{idUsuario}").hasAnyRole("USUARIO", "ONG", "ADMIN")
 
                         // INTERESSES
                         .requestMatchers(HttpMethod.POST, "/interesse").hasAnyRole("USUARIO", "ONG", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/interesse").hasAnyRole("USUARIO", "ONG", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/interesse/{id}*").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/interesse/usuario/{id}*").hasAnyRole("USUARIO", "ONG", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/interesse").hasAnyRole("ONG", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/interesse/cancelar/**").hasAnyRole("USUARIO", "ONG", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/interesse/status/**").hasAnyRole("USUARIO", "ONG", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/interesse/status/adocao/**").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/interesse/status/doacao/{idDoacao}").hasAnyRole("USUARIO", "ONG", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/interesse/cancelar/{idUsuario}/{idInteresse}").hasAnyRole("USUARIO", "ONG", "ADMIN")
 
                         // ADMIN
                         .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")

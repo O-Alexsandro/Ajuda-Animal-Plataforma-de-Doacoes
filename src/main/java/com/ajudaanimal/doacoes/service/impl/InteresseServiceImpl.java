@@ -10,14 +10,21 @@ import com.ajudaanimal.doacoes.repository.doacao.DoacaoRepository;
 import com.ajudaanimal.doacoes.repository.interesse.InteresseRepository;
 import com.ajudaanimal.doacoes.repository.usuario_ong.UsuarioRepository;
 import com.ajudaanimal.doacoes.service.InteresseService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static com.ajudaanimal.doacoes.entity.doacao.Status.EM_ANDAMENTO;
+
 @Service
+@Slf4j
 public class InteresseServiceImpl implements InteresseService {
 
     @Autowired InteresseRepository interesseRepository;
@@ -34,7 +41,16 @@ public class InteresseServiceImpl implements InteresseService {
         Doacao doacao = doacaoRepository.findById(interesseDTO.doacaoId()).orElseThrow(
                 ()-> new EntityNotFoundException("Doação não localizada"));
 
+        // Verifica se o usuário já manifestou interesse nesta doação
+        boolean alreadyInterested = interesseRepository.existsByUsuarioIdAndDoacaoId(usuario.getId(), doacao.getId());
+        if (alreadyInterested) {
+            log.info("O usuario já manifestou interesse na doação de id: " + doacao.getId());
+            throw new EntityExistsException("Você já manifestou interesse nesta doação.");
+        }
+
         Interesse interesse = new Interesse(interesseDTO, usuario, doacao);
+
+        doacao.setStatus(EM_ANDAMENTO);
         return interesseRepository.save(interesse);
     }
 
@@ -50,6 +66,12 @@ public class InteresseServiceImpl implements InteresseService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Interesse> buscarInteressePorUsuario(Long idUsuario) {
+        return interesseRepository.findAllByUsuarioId(idUsuario);
+    }
+
+    @Override
     public Interesse cancelarInteresse(Long idUsuario, Long idInteresse) {
         Interesse interesse = interesseRepository.findById(idInteresse)
                 .orElseThrow(() -> new EntityNotFoundException("Interesse não localizado"));
@@ -57,8 +79,7 @@ public class InteresseServiceImpl implements InteresseService {
         if (!interesse.getUsuario().getId().equals(idUsuario)) {
             throw new IllegalArgumentException("Este interesse não pertence ao usuário informado");
         }
-        interesse.setStatusInteresse(StatusInteresse.CANCELADO);
-        interesseRepository.save(interesse);
+        interesseRepository.delete(interesse);
         return interesse;
     }
 
@@ -78,7 +99,7 @@ public class InteresseServiceImpl implements InteresseService {
         StatusInteresse statusEnum = StatusInteresse.valueOf(statusInteresse.toUpperCase());
         Interesse response = interesseRepository.findByStatusInteresse(statusEnum);
 
-        InteresseResponseDTO usuarioDTO = new InteresseResponseDTO(
+        return new InteresseResponseDTO(
                 response.getUsuario().getId(),
                 response.getUsuario().getNome(),
                 response.getUsuario().getEmail(),
@@ -93,7 +114,6 @@ public class InteresseServiceImpl implements InteresseService {
                 response.getDoacao().getDataCadastro()
 
         );
-        return usuarioDTO;
     }
 
     @Override

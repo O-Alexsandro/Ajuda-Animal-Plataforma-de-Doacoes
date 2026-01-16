@@ -11,6 +11,7 @@ public interface InteresseService {
     public Interesse criarInteresse(InteresseDTO interesseDTO);
     public List<Interesse> listarInteresse();
     public Interesse buscarInteressePorId(Long id);
+    public List<Interesse> buscarInteressePorUsuario(Long idUsuario);
     public Interesse cancelarInteresse(Long idUsuario, Long idInteresse);
     public Interesse recusarInteresse(Long idInteresse);
     public InteresseResponseDTO buscarInteressePorStatus(String statusInteresse);

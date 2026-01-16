@@ -33,14 +33,21 @@ public class InteresseController {
         return ResponseEntity.ok(interesse);
     }
 
-    @PutMapping("cancelar/{idUsuario}/{idInteresse}")
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<Interesse>> buscarInteressePorUsuario(@PathVariable Long idUsuario){
+        List<Interesse> interesse = interesseService.buscarInteressePorUsuario(idUsuario);
+        return ResponseEntity.ok(interesse);
+    }
+
+    // Usuario cancela o interesse pelo item, sumindo da tela de histórico.
+    @DeleteMapping("cancelar/{idUsuario}/{idInteresse}")
     public ResponseEntity<Interesse> cancelarInteresse(@PathVariable Long idUsuario,
                                                        @PathVariable Long idInteresse){
         Interesse interesse = interesseService.cancelarInteresse(idUsuario, idInteresse);
         return ResponseEntity.ok(interesse);
     }
 
-    @GetMapping("/status/adocao/{idDoacao}")
+    @GetMapping("/status/doacao/{idDoacao}")
     public ResponseEntity<List<InteresseResponseDTO>> buscarInteressePorDoacao(@PathVariable Long idDoacao){
         return ResponseEntity.ok(interesseService.listarInteressePorDoacao(idDoacao));
     }

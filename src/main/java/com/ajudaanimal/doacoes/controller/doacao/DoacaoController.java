@@ -32,6 +32,12 @@ public class DoacaoController {
         return ResponseEntity.ok(doacao);
     }
 
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<Doacao>> listarDoacaoPorUsuario(@PathVariable Long idUsuario){
+        List<Doacao> responseDTO = doacaoService.listarDoacaoPorUsuario(idUsuario);
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @GetMapping("/busca/TipoItem/{categoria}")
     public ResponseEntity<List<DoacaoResponseDTO>> listarDoacaoPorTipoDeItem(@PathVariable String categoria){
         List<DoacaoResponseDTO> responseDTO = doacaoService.listarDoacaoPorTipoDeItem(categoria);
@@ -68,5 +74,12 @@ public class DoacaoController {
     public ResponseEntity deletarDoacao(@PathVariable Long id){
         doacaoService.deletarDoacao(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/confirmar/{idUsuario}/{idDoacao}")
+    public ResponseEntity<Doacao> confirmarDoacao(@PathVariable Long idUsuario,
+                                                 @PathVariable Long idDoacao){
+        Doacao doacaoConfirmada = doacaoService.confirmarDoacao(idUsuario, idDoacao);
+        return ResponseEntity.ok(doacaoConfirmada);
     }
 }
