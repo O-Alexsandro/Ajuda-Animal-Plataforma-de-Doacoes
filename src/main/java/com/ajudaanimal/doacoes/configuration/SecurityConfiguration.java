@@ -35,6 +35,12 @@ public class SecurityConfiguration {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(a -> a
 
+                        // Allow websocket handshake endpoint and its preflight
+                        .requestMatchers(HttpMethod.OPTIONS, "/ws/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/conversations/{id}/messages").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/conversations").permitAll()
+
                         // TODOS OS USUÁRIOS PODEM REALIZAR
                         .requestMatchers(HttpMethod.POST,"/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()

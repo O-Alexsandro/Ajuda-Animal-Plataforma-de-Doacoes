@@ -6,6 +6,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +53,21 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Instant expiracaoToken() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(6).toInstant(ZoneOffset.UTC);
+    }
+
+    @Override
+    public String extractUserId(String token) {
+        if (token == null) return null;
+        try {
+            if (token.startsWith("Bearer ")) token = token.substring(7).trim();
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            JWTVerifier verifier = JWT.require(algorithm).withIssuer("ajuda-animal").build();
+            DecodedJWT decoded = verifier.verify(token);
+            String uid = decoded.getClaim("USER_ID").asString();
+            return uid;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
