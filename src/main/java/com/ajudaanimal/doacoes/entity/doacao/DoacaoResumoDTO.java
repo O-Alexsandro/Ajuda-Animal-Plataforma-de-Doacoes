@@ -2,9 +2,8 @@ package com.ajudaanimal.doacoes.entity.doacao;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import com.ajudaanimal.doacoes.entity.usuario_ong.UsuarioResumoDTO;
 
-public record DoacaoResponseDTO(
+public record DoacaoResumoDTO(
         Long id,
         String titulo,
         String descricao,
@@ -13,7 +12,6 @@ public record DoacaoResponseDTO(
         String estado,
         String cidade,
         Status status,
-        LocalDateTime dataCadastro,
         List<byte[]> imagens,
-        UsuarioResumoDTO criador
+        LocalDateTime dataCadastro
 ) {}

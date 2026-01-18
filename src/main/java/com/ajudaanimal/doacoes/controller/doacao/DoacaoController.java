@@ -1,7 +1,6 @@
 package com.ajudaanimal.doacoes.controller.doacao;
 
 import com.ajudaanimal.doacoes.entity.doacao.AtualizarDoacaoDTO;
-import com.ajudaanimal.doacoes.entity.doacao.Doacao;
 import com.ajudaanimal.doacoes.entity.doacao.DoacaoDTO;
 import com.ajudaanimal.doacoes.entity.doacao.DoacaoResponseDTO;
 import com.ajudaanimal.doacoes.service.impl.DoacaoServiceImpl;
@@ -22,19 +21,19 @@ public class DoacaoController {
     @Autowired DoacaoServiceImpl doacaoService;
 
     @GetMapping
-    public ResponseEntity<List<Doacao>> listarDoacoes(){
-        return ResponseEntity.ok(doacaoService.listarDoacoes());
+    public ResponseEntity<List<DoacaoResponseDTO>> listarDoacoes(){
+        return ResponseEntity.ok(doacaoService.listarDoacoesDTO());
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<Doacao> listarDoacaoPorId(@PathVariable Long id){
-        Doacao doacao = doacaoService.listarDoacaoPorId(id);
+    public ResponseEntity<DoacaoResponseDTO> listarDoacaoPorId(@PathVariable Long id){
+        DoacaoResponseDTO doacao = doacaoService.listarDoacaoPorIdDTO(id);
         return ResponseEntity.ok(doacao);
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Doacao>> listarDoacaoPorUsuario(@PathVariable Long idUsuario){
-        List<Doacao> responseDTO = doacaoService.listarDoacaoPorUsuario(idUsuario);
+    public ResponseEntity<List<DoacaoResponseDTO>> listarDoacaoPorUsuario(@PathVariable Long idUsuario){
+        List<DoacaoResponseDTO> responseDTO = doacaoService.listarDoacaoPorUsuarioDTO(idUsuario);
         return ResponseEntity.ok(responseDTO);
     }
 
@@ -57,29 +56,34 @@ public class DoacaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Doacao> criarDoacao(@ModelAttribute @Valid DoacaoDTO doacaoDTO,
-                                              @RequestParam("imagem")MultipartFile file) throws IOException {
-        doacaoService.criarDoacao(doacaoDTO, file);
+    public ResponseEntity<Void> criarDoacao(@ModelAttribute @Valid DoacaoDTO doacaoDTO,
+                                              @RequestParam(name = "imagens", required = false) List<MultipartFile> imagens) throws IOException {
+        doacaoService.criarDoacao(doacaoDTO, imagens);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
-    public ResponseEntity<Doacao> atualizarDoacao (@ModelAttribute @Valid AtualizarDoacaoDTO doacaoDTO,
-                                                   @RequestParam(name = "imagem", required = false)MultipartFile file) throws IOException {
-        Doacao atualizarDoacao = doacaoService.atualizarDoacao(doacaoDTO, file);
-        return ResponseEntity.ok(atualizarDoacao);
+    public ResponseEntity<Void> atualizarDoacao (@ModelAttribute @Valid AtualizarDoacaoDTO doacaoDTO,
+                                                   @RequestParam(name = "imagens", required = false) List<MultipartFile> imagens) throws IOException {
+        doacaoService.atualizarDoacao(doacaoDTO, imagens);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletarDoacao(@PathVariable Long id){
+    public ResponseEntity<Void> deletarDoacao(@PathVariable Long id){
         doacaoService.deletarDoacao(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/confirmar/{idUsuario}/{idDoacao}")
-    public ResponseEntity<Doacao> confirmarDoacao(@PathVariable Long idUsuario,
+    public ResponseEntity<Void> confirmarDoacao(@PathVariable Long idUsuario,
                                                  @PathVariable Long idDoacao){
-        Doacao doacaoConfirmada = doacaoService.confirmarDoacao(idUsuario, idDoacao);
-        return ResponseEntity.ok(doacaoConfirmada);
+        doacaoService.confirmarDoacao(idUsuario, idDoacao);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/disponiveis")
+    public ResponseEntity<List<DoacaoResponseDTO>> listarDoacoesDisponiveis(){
+        return ResponseEntity.ok(doacaoService.listarDoacoesDisponiveis());
     }
 }

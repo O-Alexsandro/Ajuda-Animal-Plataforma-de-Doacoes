@@ -31,7 +31,7 @@ public class UsuarioServiceImpl implements UserDetailsService, UsuarioService {
         Usuario usuario = new Usuario(usuarioDTO);
         String senhaBcrypt = new BCryptPasswordEncoder().encode(usuarioDTO.senha());
         usuario.setSenha(senhaBcrypt);
-        emailSenderService.enviarEmailIscricao(usuarioDTO);
+        // emailSenderService.enviarEmailIscricao(usuarioDTO);
         return usuarioRepository.save(usuario);
     }
 

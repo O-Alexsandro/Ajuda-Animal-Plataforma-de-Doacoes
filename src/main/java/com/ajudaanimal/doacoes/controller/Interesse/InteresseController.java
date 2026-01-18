@@ -6,6 +6,7 @@ import com.ajudaanimal.doacoes.entity.interesse.InteresseResponseDTO;
 import com.ajudaanimal.doacoes.service.impl.InteresseServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,33 +19,35 @@ public class InteresseController {
     @Autowired InteresseServiceImpl interesseService;
 
     @PostMapping
-    public ResponseEntity<Interesse> criarInteresse(@RequestBody @Valid InteresseDTO interesseDTO){
-        return ResponseEntity.ok(interesseService.criarInteresse(interesseDTO));
+    public ResponseEntity<InteresseResponseDTO> criarInteresse(@RequestBody @Valid InteresseDTO interesseDTO){
+        Interesse criado = interesseService.criarInteresse(interesseDTO);
+        InteresseResponseDTO dto = interesseService.buscarInteressePorIdDTO(criado.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Interesse>> listarInteresses(){
-        return ResponseEntity.ok(interesseService.listarInteresse());
+    public ResponseEntity<List<InteresseResponseDTO>> listarInteresses(){
+        return ResponseEntity.ok(interesseService.listarInteresseDTO());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Interesse> buscarInteressePorId(@PathVariable Long id){
-        Interesse interesse = interesseService.buscarInteressePorId(id);
+    public ResponseEntity<InteresseResponseDTO> buscarInteressePorId(@PathVariable Long id){
+        InteresseResponseDTO interesse = interesseService.buscarInteressePorIdDTO(id);
         return ResponseEntity.ok(interesse);
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Interesse>> buscarInteressePorUsuario(@PathVariable Long idUsuario){
-        List<Interesse> interesse = interesseService.buscarInteressePorUsuario(idUsuario);
+    public ResponseEntity<List<InteresseResponseDTO>> buscarInteressePorUsuario(@PathVariable Long idUsuario){
+        List<InteresseResponseDTO> interesse = interesseService.buscarInteressePorUsuario(idUsuario);
         return ResponseEntity.ok(interesse);
     }
 
     // Usuario cancela o interesse pelo item, sumindo da tela de histórico.
     @DeleteMapping("cancelar/{idUsuario}/{idInteresse}")
-    public ResponseEntity<Interesse> cancelarInteresse(@PathVariable Long idUsuario,
+    public ResponseEntity<Void> cancelarInteresse(@PathVariable Long idUsuario,
                                                        @PathVariable Long idInteresse){
-        Interesse interesse = interesseService.cancelarInteresse(idUsuario, idInteresse);
-        return ResponseEntity.ok(interesse);
+        interesseService.cancelarInteresse(idUsuario, idInteresse);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/status/doacao/{idDoacao}")
@@ -55,5 +58,14 @@ public class InteresseController {
     @GetMapping("/status/{statusInteresse}")
     public ResponseEntity<InteresseResponseDTO> buscarInteressePorStatus(@PathVariable String statusInteresse){
         return ResponseEntity.ok(interesseService.buscarInteressePorStatus(statusInteresse));
+    }
+
+    @PutMapping("/recusar/{idInteresse}")
+    public ResponseEntity<InteresseResponseDTO> recusarInteresse(@PathVariable Long idInteresse){
+        // chama service que já define status como RECUSADO e persiste
+        var atualizado = interesseService.recusarInteresse(idInteresse);
+        // retorna o DTO atualizado para o cliente
+        var dto = interesseService.buscarInteressePorIdDTO(atualizado.getId());
+        return ResponseEntity.ok(dto);
     }
 }

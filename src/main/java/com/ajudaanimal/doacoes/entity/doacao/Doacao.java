@@ -7,6 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "doacao")
@@ -28,12 +31,18 @@ public class Doacao {
     private EstadoConservacao estadoConservacao;
     private String estado;
     private String cidade;
+    private String bairro;
+    // Armazena várias imagens (cada elemento é um byte[] com o conteúdo do arquivo)
+    @ElementCollection
+    @CollectionTable(name = "doacao_imagens", joinColumns = @JoinColumn(name = "doacao_id"))
     @Lob
-    private byte[] imagem;
+    @Column(name = "imagem")
+    private List<byte[]> imagens = new ArrayList<>();
     private Status status;
     private LocalDateTime dataCadastro;
 
-    public Doacao(DoacaoDTO doacaoDTO, Usuario usuario, MultipartFile file) throws IOException {
+    // Construtor que aceita múltiplos arquivos
+    public Doacao(DoacaoDTO doacaoDTO, Usuario usuario, List<MultipartFile> files) throws IOException {
         this.usuario = usuario;
         this.titulo = doacaoDTO.titulo();
         this.descricao = doacaoDTO.descricao();
@@ -43,6 +52,17 @@ public class Doacao {
         this.cidade = doacaoDTO.cidade();
         this.status = Status.DISPONIVEL;
         this.dataCadastro = LocalDateTime.now();
-        this.imagem = file.getBytes();
+        if (files != null) {
+            for (MultipartFile f : files) {
+                if (f != null && !f.isEmpty()) {
+                    this.imagens.add(f.getBytes());
+                }
+            }
+        }
+    }
+
+    // Compatibilidade: construtor que recebe um único arquivo
+    public Doacao(DoacaoDTO doacaoDTO, Usuario usuario, MultipartFile file) throws IOException {
+        this(doacaoDTO, usuario, file == null ? Collections.emptyList() : Collections.singletonList(file));
     }
 }

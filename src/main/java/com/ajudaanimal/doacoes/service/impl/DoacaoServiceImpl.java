@@ -4,6 +4,7 @@ import com.ajudaanimal.doacoes.entity.doacao.*;
 import com.ajudaanimal.doacoes.entity.interesse.Interesse;
 import com.ajudaanimal.doacoes.entity.interesse.StatusInteresse;
 import com.ajudaanimal.doacoes.entity.usuario_ong.Usuario;
+import com.ajudaanimal.doacoes.entity.usuario_ong.UsuarioResumoDTO;
 import com.ajudaanimal.doacoes.repository.doacao.DoacaoRepository;
 import com.ajudaanimal.doacoes.repository.interesse.InteresseRepository;
 import com.ajudaanimal.doacoes.repository.usuario_ong.UsuarioRepository;
@@ -15,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DoacaoServiceImpl implements DoacaoService {
@@ -36,15 +39,15 @@ public class DoacaoServiceImpl implements DoacaoService {
     }
 
     @Override
-    public Doacao criarDoacao(DoacaoDTO doacaoDTO, MultipartFile file) throws IOException {
+    public Doacao criarDoacao(DoacaoDTO doacaoDTO, List<MultipartFile> files) throws IOException {
         Usuario usuario = usuarioRepository.findById(doacaoDTO.usuarioId()).orElseThrow(
                 ()-> new EntityNotFoundException("Usuário não localizado"));
-        Doacao novaDoacao = new Doacao(doacaoDTO, usuario,file);
+        Doacao novaDoacao = new Doacao(doacaoDTO, usuario, files);
         return doacaoRepository.save(novaDoacao);
     }
 
     @Override
-    public Doacao atualizarDoacao(AtualizarDoacaoDTO doacaoDTO, MultipartFile file) throws IOException {
+    public Doacao atualizarDoacao(AtualizarDoacaoDTO doacaoDTO, List<MultipartFile> files) throws IOException {
         // Apenas valida a existência do usuário; o objeto não é necessário aqui.
         usuarioRepository.findById(doacaoDTO.usuarioId()).orElseThrow(
                 ()-> new EntityNotFoundException("Usuário não localizado"));
@@ -52,9 +55,9 @@ public class DoacaoServiceImpl implements DoacaoService {
         Doacao doacao = doacaoRepository.findById(doacaoDTO.id()).orElseThrow(
                 ()-> new EntityNotFoundException("Doação não localizada"));
 
-        // Se não houver arquivo (null ou vazio), apenas não substituímos a imagem;
-        // a lógica de manter a imagem atual fica em `atualizarDadosDoacao`.
-        Doacao atualizacao = atualizarDadosDoacao(doacao, doacaoDTO, file);
+        // Se não houver arquivos (null ou vazio), apenas não substituímos as imagens;
+        // a lógica de manter as imagens atuais fica em `atualizarDadosDoacao`.
+        Doacao atualizacao = atualizarDadosDoacao(doacao, doacaoDTO, files);
         return doacaoRepository.save(atualizacao);
     }
 
@@ -70,17 +73,8 @@ public class DoacaoServiceImpl implements DoacaoService {
     public List<DoacaoResponseDTO> listarDoacaoPorTipoDeItem(String categoria) {
         Categoria categoriaEnum = Categoria.valueOf(categoria.toUpperCase());
         Doacao response = doacaoRepository.findByCategoria(categoriaEnum);
-
-        DoacaoResponseDTO doacaoResponseDTO = new DoacaoResponseDTO(
-                response.getTitulo(),
-                response.getDescricao(),
-                response.getCategoria(),
-                response.getEstadoConservacao(),
-                response.getEstado(),
-                response.getCidade(),
-                response.getImagem()
-        );
-        return List.of(doacaoResponseDTO);
+        // usa toDTO para copiar os byte[] enquanto a transação está ativa
+        return List.of(toDTO(response));
     }
 
     @Override
@@ -88,17 +82,7 @@ public class DoacaoServiceImpl implements DoacaoService {
     public List<DoacaoResponseDTO> listarDoacaoPorEstadoConservacao(String estadoConservacao) {
         EstadoConservacao estadoConservacaoEnum = EstadoConservacao.valueOf(estadoConservacao.toUpperCase());
         Doacao response = doacaoRepository.findByEstadoConservacao(estadoConservacaoEnum);
-
-        DoacaoResponseDTO doacaoResponseDTO = new DoacaoResponseDTO(
-                response.getTitulo(),
-                response.getDescricao(),
-                response.getCategoria(),
-                response.getEstadoConservacao(),
-                response.getEstado(),
-                response.getCidade(),
-                response.getImagem()
-        );
-        return List.of(doacaoResponseDTO);
+        return List.of(toDTO(response));
     }
 
     @Override
@@ -106,17 +90,7 @@ public class DoacaoServiceImpl implements DoacaoService {
     public List<DoacaoResponseDTO> listarDoacaoPorEstado(String estado) {
         String request = estado.toUpperCase();
         Doacao response = doacaoRepository.findByEstado(request);
-
-        DoacaoResponseDTO doacaoResponseDTO = new DoacaoResponseDTO(
-                response.getTitulo(),
-                response.getDescricao(),
-                response.getCategoria(),
-                response.getEstadoConservacao(),
-                response.getEstado(),
-                response.getCidade(),
-                response.getImagem()
-        );
-        return List.of(doacaoResponseDTO);
+        return List.of(toDTO(response));
     }
 
     @Override
@@ -158,7 +132,7 @@ public class DoacaoServiceImpl implements DoacaoService {
         return doacao;
     }
 
-    public Doacao atualizarDadosDoacao(Doacao doacao, AtualizarDoacaoDTO doacaoDTO, MultipartFile file) throws IOException {
+    public Doacao atualizarDadosDoacao(Doacao doacao, AtualizarDoacaoDTO doacaoDTO, List<MultipartFile> files) throws IOException {
         if (doacaoDTO.titulo() != null){
             doacao.setTitulo(doacaoDTO.titulo());
         }
@@ -177,14 +151,88 @@ public class DoacaoServiceImpl implements DoacaoService {
         if (doacaoDTO.cidade() != null){
             doacao.setCidade(doacaoDTO.cidade());
         }
-        // Tratamento seguro do `file`: pode ser null ou estar vazio.
-        if (file != null && !file.isEmpty()){
-            byte[] imagem = file.getBytes();
-            doacao.setImagem(imagem);
+        // Tratamento seguro dos `files`: pode ser null ou estar vazio.
+        if (files != null && !files.isEmpty()){
+            // Substituímos todas as imagens atuais pela nova lista enviada
+            doacao.getImagens().clear();
+            for (MultipartFile f : files) {
+                if (f != null && !f.isEmpty()) {
+                    doacao.getImagens().add(f.getBytes());
+                }
+            }
         }
         return doacao;
     }
 
+    @Transactional(readOnly = true)
+    public List<DoacaoResponseDTO> listarDoacoesDTO() {
+        List<Doacao> all = doacaoRepository.findAll();
+        return all.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public DoacaoResponseDTO listarDoacaoPorIdDTO(Long id) {
+        Doacao d = doacaoRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("Doação não localizada"));
+        return toDTO(d);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DoacaoResponseDTO> listarDoacaoPorUsuarioDTO(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(
+                ()-> new EntityNotFoundException("Usuário não localizado"));
+        List<Doacao> list = doacaoRepository.findByUsuario(usuario);
+        return list.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<DoacaoResponseDTO> listarDoacoesDisponiveis() {
+        List<Doacao> disponiveis = doacaoRepository.findByStatusIn(List.of(Status.DISPONIVEL, Status.EM_ANDAMENTO));
+        return disponiveis.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    private DoacaoResponseDTO toDTO(Doacao response) {
+        // Copia os byte[] das imagens enquanto a sessão/transação ainda está ativa
+        List<byte[]> imagensCopiadas = new ArrayList<>();
+        if (response.getImagens() != null) {
+            for (byte[] b : response.getImagens()) {
+                if (b != null) {
+                    imagensCopiadas.add(java.util.Arrays.copyOf(b, b.length));
+                } else {
+                    imagensCopiadas.add(null);
+                }
+            }
+        }
+
+        Usuario criador = response.getUsuario();
+        UsuarioResumoDTO usuarioResumoDTO = null;
+        if (criador != null) {
+            usuarioResumoDTO = new UsuarioResumoDTO(
+                    criador.getId(),
+                    criador.getNome(),
+                    criador.getEmail(),
+                    criador.getTelefone(),
+                    criador.getRua(),
+                    criador.getCidade(),
+                    criador.getEstado(),
+                    criador.getBairro(),
+                    criador.getTipoDeConta()
+            );
+        }
+
+        return new DoacaoResponseDTO(
+                response.getId(),
+                response.getTitulo(),
+                response.getDescricao(),
+                response.getCategoria(),
+                response.getEstadoConservacao(),
+                response.getEstado(),
+                response.getCidade(),
+                response.getStatus(),
+                response.getDataCadastro(),
+                imagensCopiadas,
+                usuarioResumoDTO
+        );
+    }
 
 }
-
