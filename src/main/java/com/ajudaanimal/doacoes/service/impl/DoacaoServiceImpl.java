@@ -151,6 +151,12 @@ public class DoacaoServiceImpl implements DoacaoService {
         if (doacaoDTO.cidade() != null){
             doacao.setCidade(doacaoDTO.cidade());
         }
+        if (doacaoDTO.bairro() != null){
+            doacao.setBairro(doacaoDTO.bairro());
+        }
+        if (doacaoDTO.cep() != null){
+            doacao.setCep(doacaoDTO.cep());
+        }
         // Tratamento seguro dos `files`: pode ser null ou estar vazio.
         if (files != null && !files.isEmpty()){
             // Substituímos todas as imagens atuais pela nova lista enviada
@@ -228,6 +234,8 @@ public class DoacaoServiceImpl implements DoacaoService {
                 response.getEstadoConservacao(),
                 response.getEstado(),
                 response.getCidade(),
+                response.getBairro(),
+                response.getCep(),
                 response.getStatus(),
                 response.getDataCadastro(),
                 imagensCopiadas,

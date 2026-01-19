@@ -12,6 +12,8 @@ public record DoacaoResponseDTO(
         EstadoConservacao estadoConservacao,
         String estado,
         String cidade,
+        String bairro,
+        String cep,
         Status status,
         LocalDateTime dataCadastro,
         List<byte[]> imagens,

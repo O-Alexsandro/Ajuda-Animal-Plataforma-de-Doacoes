@@ -133,12 +133,6 @@ public class InteresseServiceImpl implements InteresseService {
     }
 
     @Override
-    public Interesse recusarInteresse(Long idInteresse) {
-        // antigo método - substituído pela nova assinatura
-        throw new UnsupportedOperationException("Use recusarInteresse(idUsuario, idInteresse, idDoacao)");
-    }
-
-    @Override
     public Interesse recusarInteresse(Long idUsuario, Long idInteresse, Long idDoacao) {
         // valida se a doação existe e pertence ao usuário (idUsuario é o dono da doação)
         var doacao = doacaoRepository.findById(idDoacao).orElseThrow(() -> new EntityNotFoundException("Doação não localizada"));

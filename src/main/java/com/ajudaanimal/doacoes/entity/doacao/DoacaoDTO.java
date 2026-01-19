@@ -16,5 +16,9 @@ public record DoacaoDTO(
         @NotNull
         String estado,
         @NotNull
-        String cidade
+        String cidade,
+        @NotNull
+        String bairro,
+        @NotNull
+        String cep
 ) {}

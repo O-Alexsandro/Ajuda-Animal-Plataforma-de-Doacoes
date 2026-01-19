@@ -12,5 +12,7 @@ public record AtualizarDoacaoDTO(
         Categoria categoria,
         EstadoConservacao estadoConservacao,
         String estado,
-        String cidade
+        String cidade,
+        String bairro,
+        String cep
 ) {}

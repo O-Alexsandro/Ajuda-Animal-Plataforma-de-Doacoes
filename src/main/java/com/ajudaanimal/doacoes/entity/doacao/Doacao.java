@@ -32,6 +32,7 @@ public class Doacao {
     private String estado;
     private String cidade;
     private String bairro;
+    private String cep;
     // Armazena várias imagens (cada elemento é um byte[] com o conteúdo do arquivo)
     @ElementCollection
     @CollectionTable(name = "doacao_imagens", joinColumns = @JoinColumn(name = "doacao_id"))
@@ -50,6 +51,8 @@ public class Doacao {
         this.estadoConservacao = doacaoDTO.estadoConservacao();
         this.estado = doacaoDTO.estado();
         this.cidade = doacaoDTO.cidade();
+        this.bairro = doacaoDTO.bairro();
+        this.cep = doacaoDTO.cep();
         this.status = Status.DISPONIVEL;
         this.dataCadastro = LocalDateTime.now();
         if (files != null) {

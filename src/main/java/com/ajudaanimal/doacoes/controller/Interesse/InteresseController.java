@@ -60,12 +60,4 @@ public class InteresseController {
         return ResponseEntity.ok(interesseService.buscarInteressePorStatus(statusInteresse));
     }
 
-    @PutMapping("/recusar/{idInteresse}")
-    public ResponseEntity<InteresseResponseDTO> recusarInteresse(@PathVariable Long idInteresse){
-        // chama service que já define status como RECUSADO e persiste
-        var atualizado = interesseService.recusarInteresse(idInteresse);
-        // retorna o DTO atualizado para o cliente
-        var dto = interesseService.buscarInteressePorIdDTO(atualizado.getId());
-        return ResponseEntity.ok(dto);
-    }
 }
