@@ -1,0 +1,9 @@
+# Ignore build output and local files
+target/
+*.log
+.idea/
+.vscode/
+.git/
+.gitignore
+.DS_Store
+
