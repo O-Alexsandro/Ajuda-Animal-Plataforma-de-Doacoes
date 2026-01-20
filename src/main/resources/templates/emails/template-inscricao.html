@@ -4,88 +4,81 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Confirmação de Inscrição</title>
+    <style>
+        /* Estilos simples e compatíveis com clientes de e-mail */
+        body { margin:0; padding:0; background-color:#f6f6f6; font-family: Arial, Helvetica, sans-serif; }
+        .card { max-width:680px; margin:24px auto; background:#ffffff; border-radius:10px; overflow:hidden; }
+        .header { background:#FF6B35; padding:28px 22px; color:#fff; text-align:center; }
+        .header h1 { margin:0; font-size:22px; }
+        .header p { margin:8px 0 0; color:#ffeae0; font-size:14px; }
+        .content { padding:26px 22px; color:#333; }
+        .greeting { font-size:16px; line-height:1.6; margin:0 0 10px 0; }
+        .lead { font-size:15px; color:#555; line-height:1.6; margin-top:8px; }
+        .benefits { display:flex; gap:12px; margin:20px 0; }
+        .benefit { flex:1; background:#fbfbfb; padding:12px; border-radius:8px; font-size:14px; color:#333; }
+        .cta { text-align:center; margin:22px 0; }
+        .btn { display:inline-block; background:#FF6B35; color:#fff; text-decoration:none; padding:12px 22px; border-radius:8px; font-weight:700; }
+        .hint { font-size:13px; color:#777; margin-top:12px; }
+        .footer { text-align:center; padding:16px 12px; font-size:12px; color:#999; }
+        @media only screen and (max-width:520px){
+            .benefits{flex-direction:column}
+            .header h1{font-size:20px}
+            .card{margin:12px}
+        }
+    </style>
 </head>
-<body style="margin:0; padding:0; background-color:#f6f6f6; font-family: Arial, Helvetica, sans-serif;">
+<body>
 
-<table align="center" width="100%" cellpadding="0" cellspacing="0">
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation">
     <tr>
-        <td align="center" style="padding: 30px 10px;">
-
-            <!-- Container -->
-            <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.08);">
-
-                <!-- Header -->
+        <td align="center">
+            <table class="card" role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td style="background-color:#FF6B35; padding:30px; text-align:center;">
-                        <h1 style="margin:0; color:#ffffff; font-size:26px;">
-                            🐾 Bem-vindo ao {{nomeApp}}!
-                        </h1>
-                        <p style="margin-top:10px; color:#ffeae0; font-size:16px;">
-                            Sua inscrição foi realizada com sucesso
-                        </p>
+                    <td class="header">
+                        <h1>Bem-vindo ao {{nomeApp}}!</h1>
+                        <p>Conectando quem doa com quem precisa de forma prática.</p>
                     </td>
                 </tr>
 
-                <!-- Conteúdo -->
                 <tr>
-                    <td style="padding:30px; color:#333333;">
-                        <p style="font-size:16px; line-height:1.6;">
-                            Olá, <strong>{{nome}}</strong> 💙
-                        </p>
+                    <td class="content">
+                        <p class="greeting">Olá, <strong>{{nome}}</strong> 👋</p>
 
-                        <p style="font-size:16px; line-height:1.6;">
-                            Que alegria ter você com a gente! Sua inscrição no <strong>{{nomeApp}}</strong> foi concluída com sucesso.
-                        </p>
+                        <p class="lead">Seu cadastro foi realizado com sucesso. Agora você pode cadastrar itens que não usa mais, demonstrar interesse em itens disponíveis e conversar diretamente com o responsável pelo item para combinar a retirada.</p>
 
-                        <p style="font-size:16px; line-height:1.6;">
-                            A partir de agora, você pode:
-                        </p>
-
-                        <ul style="padding-left:20px; font-size:16px; line-height:1.6;">
-                            <li>🐶 Doar itens para animais que precisam</li>
-                            <li>🐱 Ajudar ONGs e protetores independentes</li>
-                            <li>❤️ Fazer parte de uma comunidade que ama e cuida</li>
-                        </ul>
-
-                        <!-- Botão -->
-                        <div style="text-align:center; margin:35px 0;">
-                            <a href="{{linkApp}}"
-                               style="
-                     background-color:#4ECDC4;
-                     color:#ffffff;
-                     padding:14px 28px;
-                     text-decoration:none;
-                     font-size:16px;
-                     border-radius:30px;
-                     display:inline-block;
-                     font-weight:bold;
-                   ">
-                                Acessar o app 🐾
-                            </a>
+                        <div class="benefits">
+                            <div class="benefit">
+                                <strong>Publique facilmente</strong>
+                                <p style="margin:8px 0 0;">Adicione fotos, descrição e estado do item em poucos passos.</p>
+                            </div>
+                            <div class="benefit">
+                                <strong>Encontre perto de você</strong>
+                                <p style="margin:8px 0 0;">Busque por categoria ou condições para facilitar a busca.</p>
+                            </div>
+                            <div class="benefit">
+                                <strong>Converse com segurança</strong>
+                                <p style="margin:8px 0 0;">Troque mensagens dentro da plataforma para combinar a doação e retirada.</p>
+                            </div>
                         </div>
 
-                        <p style="font-size:15px; line-height:1.6;">
-                            Cada doação faz a diferença. Obrigado por ajudar a transformar vidas! ✨
-                        </p>
+                        <div class="cta">
+                            <a href="{{linkPortal}}" class="btn" target="_blank" rel="noopener">Comece agora</a>
+                        </div>
 
-                        <p style="margin-top:30px; font-size:14px; color:#666;">
-                            Com carinho,<br/>
-                            <strong>Equipe {{nomeApp}}</strong>
-                        </p>
+                        <p class="hint">Dica: fotos claras e uma descrição honesta aumentam as chances de doação.</p>
+
+                        <p class="hint" style="margin-top:14px;">Se tiver dúvidas, responda este e-mail ou acesse a nossa central de ajuda.</p>
+
                     </td>
                 </tr>
 
-                <!-- Rodapé -->
                 <tr>
-                    <td style="background-color:#f2fefe; padding:20px; text-align:center; font-size:12px; color:#666;">
-                        <p style="margin:0;">
-                            © {{ano}} {{nomeApp}} • Feito com amor pelos animais 🐕🐈
-                        </p>
+                    <td>
+                        <div class="footer">© {{ano}} {{nomeApp}} - Feito com cuidado para conectar doadores e quem precisa.</div>
                     </td>
                 </tr>
 
             </table>
-            <!-- /Container -->
 
         </td>
     </tr>

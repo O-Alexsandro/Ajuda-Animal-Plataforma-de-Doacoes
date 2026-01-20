@@ -3,6 +3,7 @@ package com.ajudaanimal.doacoes.service.impl;
 import com.ajudaanimal.doacoes.entity.usuario_ong.AtualizarUsuarioDTO;
 import com.ajudaanimal.doacoes.entity.usuario_ong.Usuario;
 import com.ajudaanimal.doacoes.entity.usuario_ong.UsuarioDTO;
+import com.ajudaanimal.doacoes.entity.usuario_ong.ResetSenhaDTO;
 import com.ajudaanimal.doacoes.repository.usuario_ong.UsuarioRepository;
 import com.ajudaanimal.doacoes.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class UsuarioServiceImpl implements UserDetailsService, UsuarioService {
         Usuario usuario = new Usuario(usuarioDTO);
         String senhaBcrypt = new BCryptPasswordEncoder().encode(usuarioDTO.senha());
         usuario.setSenha(senhaBcrypt);
-        // emailSenderService.enviarEmailIscricao(usuarioDTO);
+        emailSenderService.enviarEmailIscricao(usuarioDTO);
         return usuarioRepository.save(usuario);
     }
 
@@ -59,6 +61,39 @@ public class UsuarioServiceImpl implements UserDetailsService, UsuarioService {
     @Override
     public List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void resetSenha(ResetSenhaDTO resetSenhaDTO) {
+        if (resetSenhaDTO == null) {
+            throw new IllegalArgumentException("Dados de reset não podem ser nulos");
+        }
+
+        String email = resetSenhaDTO.email();
+        String nome = resetSenhaDTO.nome();
+        String novaSenha = resetSenhaDTO.novaSenha();
+
+        UserDetails userDetails = usuarioRepository.findByEmail(email);
+        if (userDetails == null) {
+            // Por segurança, não revelar se o usuário existe - lançar exceção genérica
+            throw new RuntimeException("Não foi possível resetar a senha");
+        }
+
+        Usuario usuario = (Usuario) userDetails;
+
+        if (!usuario.getNome().trim().equalsIgnoreCase(nome)) {
+            throw new RuntimeException("Nome e email não correspondem");
+        }
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (encoder.matches(novaSenha, usuario.getSenha())) {
+            throw new RuntimeException("A nova senha não pode ser igual à senha antiga");
+        }
+
+        String senhaBcrypt = encoder.encode(novaSenha);
+        usuario.setSenha(senhaBcrypt);
+        usuarioRepository.save(usuario);
     }
 
     public Usuario atualizarDados(Usuario usuario, AtualizarUsuarioDTO dados){

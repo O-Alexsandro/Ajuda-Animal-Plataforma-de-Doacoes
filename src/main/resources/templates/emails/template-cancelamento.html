@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cancelamento de doação</title>
+    <style>
+        body{margin:0;padding:0;background:#f6f6f6;font-family:Arial,Helvetica,sans-serif}
+        .card{max-width:680px;margin:24px auto;background:#fff;border-radius:10px;overflow:hidden}
+        .header{background:#FF6B35;padding:20px 22px;color:#fff;text-align:left}
+        .header h2{margin:0;font-size:20px}
+        .content{padding:20px 22px;color:#333}
+        .muted{color:#666;font-size:13px}
+        .item{border:1px solid #f0f0f0;padding:12px;border-radius:8px;background:#fff9f6;margin:12px 0}
+        .meta{font-size:14px;color:#444}
+        .link{color:#FF6B35;text-decoration:none;font-weight:600}
+        .footer{padding:16px 12px;text-align:center;color:#999;font-size:12px}
+        @media only screen and (max-width:520px){.card{margin:12px}}
+    </style>
+</head>
+<body>
+
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+        <td align="center">
+            <table class="card" role="presentation" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="header">
+                        <h2>Cancelamento de doação</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="content">
+                        <p class="muted">Olá <strong>{{nomeInteressado}}</strong>,</p>
+
+                        <p class="meta">Lamentamos informar que o item "<strong>{{nomeItem}}</strong>", anunciado por <strong>{{nomeDono}}</strong>, foi cancelado pelo responsável e não está mais disponível para doação.</p>
+
+                        <div class="item">
+                            <p style="margin:0 0 6px 0;"><strong>{{nomeItem}}</strong></p>
+                            <p style="margin:0 0 8px 0;color:#666;font-size:13px;">{{descricaoItem}}</p>
+                            <p style="margin:0;color:#666;font-size:13px;">{{cidadeItem}}</p>
+                        </div>
+
+                        <p class="meta" style="margin-top:12px;">Se quiser, você pode continuar navegando por outros itens disponíveis no <a href="{{linkPortal}}" class="link">{{nomeApp}}</a>.</p>
+
+                        <p class="muted" style="margin-top:14px;">Pedimos desculpas por qualquer transtorno. Se precisar de ajuda, responda este e-mail ou contate nossa equipe.</p>
+
+                        <p style="margin-top:16px; color:#666; font-size:13px;">Agradecemos por fazer parte do {{nomeApp}}.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="footer">© {{ano}} {{nomeApp}} — Mensagem automática, por favor não responda diretamente.</div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

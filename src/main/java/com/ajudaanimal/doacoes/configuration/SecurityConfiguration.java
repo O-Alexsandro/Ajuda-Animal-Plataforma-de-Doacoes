@@ -43,7 +43,8 @@ public class SecurityConfiguration {
 
                         // TODOS OS USUÁRIOS PODEM REALIZAR
                         .requestMatchers(HttpMethod.POST,"/login").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/usuarios/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/usuarios/reset-senha").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/usuarios").permitAll()
                         .requestMatchers(HttpMethod.GET,"/doacoes").permitAll()
                         .requestMatchers(HttpMethod.GET,"/doacoes/**").permitAll()

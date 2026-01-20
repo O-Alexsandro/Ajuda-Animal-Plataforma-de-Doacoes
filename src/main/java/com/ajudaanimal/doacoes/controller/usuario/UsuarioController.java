@@ -3,6 +3,7 @@ package com.ajudaanimal.doacoes.controller.usuario;
 import com.ajudaanimal.doacoes.entity.usuario_ong.AtualizarUsuarioDTO;
 import com.ajudaanimal.doacoes.entity.usuario_ong.Usuario;
 import com.ajudaanimal.doacoes.entity.usuario_ong.UsuarioDTO;
+import com.ajudaanimal.doacoes.entity.usuario_ong.ResetSenhaDTO;
 import com.ajudaanimal.doacoes.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,12 @@ public class UsuarioController {
     public ResponseEntity<Usuario> criarUsuario (@RequestBody @Valid UsuarioDTO usuarioDTO){
         Usuario usuario = usuarioService.criarUsuario(usuarioDTO);
         return ResponseEntity.ok(usuario);
+    }
+
+    @PostMapping("/reset-senha")
+    public ResponseEntity<String> resetarSenha(@RequestBody @Valid ResetSenhaDTO resetSenhaDTO){
+        usuarioService.resetSenha(resetSenhaDTO);
+        return ResponseEntity.ok("Senha atualizada com sucesso");
     }
 
     @PutMapping

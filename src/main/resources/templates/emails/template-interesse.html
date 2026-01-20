@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Alguém se interessou pelo seu item</title>
+    <style>
+        body { margin:0; padding:0; background:#f6f7f9; font-family: Arial, Helvetica, sans-serif; }
+        .card { max-width:680px; margin:24px auto; background:#ffffff; border-radius:10px; overflow:hidden; }
+        .header { background:#FF6B35; padding:20px 22px; color:#fff; text-align:left; }
+        .header h2 { margin:0; font-size:20px; }
+        .content { padding:22px; color:#333; }
+        .muted { color:#666; font-size:13px; }
+        .item { border:1px solid #eef5ef; padding:12px; border-radius:8px; background:#fbfffc; margin:12px 0; }
+        .meta { font-size:14px; color:#444; }
+        .cta { text-align:center; margin:18px 0; }
+        /* .btn removido: usamos links de texto simples em vez de botões */
+        .small { font-size:13px; color:#777; }
+        .footer { text-align:center; padding:16px 12px; font-size:12px; color:#999; }
+        @media only screen and (max-width:520px){ .card{margin:12px} }
+    </style>
+</head>
+<body>
+
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+    <tr><td align="center">
+        <table class="card" role="presentation" cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="header">
+                    <h2>Alguém se interessou pelo seu item</h2>
+                </td>
+            </tr>
+            <tr>
+                <td class="content">
+                    <p class="muted">Olá <strong>{{nomeDono}}</strong>,</p>
+
+                    <p class="meta">O usuário <strong>{{nomeInteressado}}</strong> demonstrou interesse no seu item "<em>{{nomeItem}}</em>".</p>
+
+                    <div class="item">
+                        <p style="margin:0 0 6px 0;"><strong>{{nomeItem}}</strong></p>
+                        <p class="small" style="margin:0 0 8px 0;">{{descricaoItem}}</p>
+                        <p class="small" style="margin:0 0 8px 0;">{{cidadeItem}}</p>
+                    </div>
+
+                    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin-top:12px;">
+                        <tr>
+                            <td style="vertical-align:top; padding-right:12px; width:65%;">
+                                <p class="small"><strong>Contato do interessado</strong></p>
+                                <p class="small">E-mail: <a href="mailto:{{emailInteressado}}" style="color:#FF6B35; text-decoration:none;">{{emailInteressado}}</a></p>
+                                <p class="small">Telefone: {{telefoneInteressado}}</p>
+                            </td>
+
+                        </tr>
+                    </table>
+
+                    <p class="small" style="margin-top:14px; color:#555;">Se você já combinou a retirada ou o item não está mais disponível, lembre-se de atualizar o status no portal para avisar outros interessados.</p>
+
+                    <p class="muted">Obrigado por fazer parte do <strong>{{nomeApp}}</strong> — {{ano}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="footer">Mensagem automática - por favor, não responda diretamente a este e-mail.</div>
+                </td>
+            </tr>
+        </table>
+    </td></tr>
+</table>
+
+</body>
+</html>
+

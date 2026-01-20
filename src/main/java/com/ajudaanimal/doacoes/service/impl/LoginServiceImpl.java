@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class LoginServiceImpl implements LoginService {
 
@@ -21,7 +20,6 @@ public class LoginServiceImpl implements LoginService {
     public LoginServiceImpl(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
-
 
     @Override
     public ResponseTokenDTO login(LoginDTO data){

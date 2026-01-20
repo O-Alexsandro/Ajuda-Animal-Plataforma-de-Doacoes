@@ -33,6 +33,8 @@ public class InteresseServiceImpl implements InteresseService {
 
     @Autowired DoacaoRepository doacaoRepository;
 
+    @Autowired EmailSenderServiceImpl emailSenderService;
+
     @Override
     public Interesse criarInteresse(InteresseDTO interesseDTO) {
         Usuario usuario = usuarioRepository.findById(interesseDTO.usuarioId()).orElseThrow(
@@ -51,6 +53,7 @@ public class InteresseServiceImpl implements InteresseService {
         Interesse interesse = new Interesse(interesseDTO, usuario, doacao);
 
         doacao.setStatus(EM_ANDAMENTO);
+        emailSenderService.enviarEmailInteresse(interesseDTO);
         return interesseRepository.save(interesse);
     }
 

@@ -28,6 +28,9 @@ public class DoacaoServiceImpl implements DoacaoService {
     @Autowired UsuarioRepository usuarioRepository;
 
     @Autowired InteresseRepository interesseRepository;
+
+    @Autowired EmailSenderServiceImpl emailSenderService;
+
     @Override
     public List<Doacao> listarDoacoes() {
         return doacaoRepository.findAll();
@@ -47,6 +50,7 @@ public class DoacaoServiceImpl implements DoacaoService {
     }
 
     @Override
+    @Transactional
     public Doacao atualizarDoacao(AtualizarDoacaoDTO doacaoDTO, List<MultipartFile> files) throws IOException {
         // Apenas valida a existência do usuário; o objeto não é necessário aqui.
         usuarioRepository.findById(doacaoDTO.usuarioId()).orElseThrow(
@@ -62,9 +66,21 @@ public class DoacaoServiceImpl implements DoacaoService {
     }
 
     @Override
+    @Transactional
     public void deletarDoacao(Long id) {
         Doacao doacao = doacaoRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Doação não encontrada"));
+
+        // Busca todos os interesses associados a essa doação
+        List<Interesse> interesses = interesseRepository.findByDoacaoId(id);
+
+        // Envia emails de cancelamento para cada usuário interessado (se houver)
+        if (interesses != null && !interesses.isEmpty()) {
+            emailSenderService.enviarEmailCancelamentoItem(doacao, interesses);
+            // Após informar os interessados, remove os registros de interesse
+            interesseRepository.deleteAll(interesses);
+        }
+
         doacaoRepository.delete(doacao);
     }
 
