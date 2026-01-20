@@ -53,7 +53,6 @@ public class InteresseServiceImpl implements InteresseService {
         Interesse interesse = new Interesse(interesseDTO, usuario, doacao);
 
         doacao.setStatus(EM_ANDAMENTO);
-        emailSenderService.enviarEmailInteresse(interesseDTO);
         return interesseRepository.save(interesse);
     }
 

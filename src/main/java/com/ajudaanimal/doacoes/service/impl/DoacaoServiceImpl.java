@@ -76,7 +76,6 @@ public class DoacaoServiceImpl implements DoacaoService {
 
         // Envia emails de cancelamento para cada usuário interessado (se houver)
         if (interesses != null && !interesses.isEmpty()) {
-            emailSenderService.enviarEmailCancelamentoItem(doacao, interesses);
             // Após informar os interessados, remove os registros de interesse
             interesseRepository.deleteAll(interesses);
         }
